@@ -4,9 +4,6 @@ require('dotenv').config();
 const moment = require('moment-timezone');
 const axios = require('axios').default;
 
-// const BOT_TOKEN = '5362004050:AAGAhZ7C0oqZQylJiTPtUOqmEhVXbLg31zI';
-
-// const bot = new Telegraf(BOT_TOKEN);
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const buttonsStart = Markup.inlineKeyboard([
   [Markup.button.callback('Подписаться на уведомления', 'subscribe')],
