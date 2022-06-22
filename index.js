@@ -13,7 +13,7 @@ const buttonsAny = Markup.inlineKeyboard([[Markup.button.callback('Касса и
 
 bot.start((msg) => {
   const chatId = msg.message.chat.id;
-  msg.telegram.sendMessage(chatId, 'Bshop', buttonsStart);
+  // msg.telegram.sendMessage(chatId, 'Bshop', buttonsStart);
 });
 
 bot.action('subscribe', async (msg) => {
