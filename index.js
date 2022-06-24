@@ -16,168 +16,168 @@ bot.start((msg) => {
   // msg.telegram.sendMessage(chatId, 'Bshop', buttonsStart);
 });
 
-bot.action('subscribe', async (msg) => {
-  const chatId = msg.update.callback_query.message.chat.id;
-  await msg.answerCbQuery();
-  await msg.reply(
-    'Введите свой номер, который записан на сайте BSHOP (если при регистрации вы указывали номер в формате +77777779999, сюда пишите в таком же формате)',
-  );
-  console.log('CronJob Запущен: ' + chatId);
-  //Каждый день в 21:00,получение кассы и статистики за день
-  const getStatistik = new CronJob(
-    '0 21 */1 * *',
-    function () {
-      getKassaStaticstick(msg, chatId, buttonsAny);
-      console.log('Получение статистики :' + chatId);
-    },
-    null,
-    false,
-    'Asia/Almaty',
-  );
+// bot.action('subscribe', async (msg) => {
+//   const chatId = msg.update.callback_query.message.chat.id;
+//   await msg.answerCbQuery();
+//   await msg.reply(
+//     'Введите свой номер, который записан на сайте BSHOP (если при регистрации вы указывали номер в формате +77777779999, сюда пишите в таком же формате)',
+//   );
+//   console.log('CronJob Запущен: ' + chatId);
+//   //Каждый день в 21:00,получение кассы и статистики за день
+//   const getStatistik = new CronJob(
+//     '0 21 */1 * *',
+//     function () {
+//       getKassaStaticstick(msg, chatId, buttonsAny);
+//       console.log('Получение статистики :' + chatId);
+//     },
+//     null,
+//     false,
+//     'Asia/Almaty',
+//   );
 
-  //Каждый день в 10:00, ПОЗДРАВЛЕНИЕ С ДНЕМ РОЖДЕНИЯ
-  const bDay = new CronJob(
-    '0 10 */1 * *',
-    function () {
-      const now = moment().tz('Asia/Almaty').format();
-      let year = now.slice(0, 4),
-        month = now.slice(5, 7),
-        day = now.slice(8, 10),
-        nowDay = `${day}.${month}.${year}`;
-      axios.get('http://bshop.kz/api/birthdaySelTel.php').then(function async(res) {
-        res.data.map(async (item) => {
-          if (item.chatID == chatId && item.birthday.substr(0, 5) == nowDay.slice(0, 5)) {
-            await msg.telegram.sendMessage(
-              chatId,
-              `С днем рождения! Желаем Вам успеха и процветания`,
-            );
-          }
-        });
-      });
-    },
-    null,
-    false,
-    'Asia/Almaty',
-  );
+//   //Каждый день в 10:00, ПОЗДРАВЛЕНИЕ С ДНЕМ РОЖДЕНИЯ
+//   const bDay = new CronJob(
+//     '0 10 */1 * *',
+//     function () {
+//       const now = moment().tz('Asia/Almaty').format();
+//       let year = now.slice(0, 4),
+//         month = now.slice(5, 7),
+//         day = now.slice(8, 10),
+//         nowDay = `${day}.${month}.${year}`;
+//       axios.get('http://bshop.kz/api/birthdaySelTel.php').then(function async(res) {
+//         res.data.map(async (item) => {
+//           if (item.chatID == chatId && item.birthday.substr(0, 5) == nowDay.slice(0, 5)) {
+//             await msg.telegram.sendMessage(
+//               chatId,
+//               `С днем рождения! Желаем Вам успеха и процветания`,
+//             );
+//           }
+//         });
+//       });
+//     },
+//     null,
+//     false,
+//     'Asia/Almaty',
+//   );
 
-  //Раз в месяц  , напоминание об оплате
-  const payDay = new CronJob(
-    '0 9 1 */1 *',
-    function () {
-      const now = moment().tz('Asia/Almaty').format();
+//   //Раз в месяц  , напоминание об оплате
+//   const payDay = new CronJob(
+//     '0 9 1 */1 *',
+//     function () {
+//       const now = moment().tz('Asia/Almaty').format();
 
-      let year = now.slice(0, 4),
-        month = now.slice(5, 7),
-        day = now.slice(8, 10),
-        nowDay = `${day}.${month}.${year}`;
-      msg.telegram.sendMessage(chatId, `Напоминание об оплате вашего счета BSHOP, ${nowDay}`);
-    },
-    null,
-    false,
-    'Asia/Almaty',
-  );
+//       let year = now.slice(0, 4),
+//         month = now.slice(5, 7),
+//         day = now.slice(8, 10),
+//         nowDay = `${day}.${month}.${year}`;
+//       msg.telegram.sendMessage(chatId, `Напоминание об оплате вашего счета BSHOP, ${nowDay}`);
+//     },
+//     null,
+//     false,
+//     'Asia/Almaty',
+//   );
 
-  bDay.start();
-  payDay.start();
-  getStatistik.start();
-});
+//   bDay.start();
+//   payDay.start();
+//   getStatistik.start();
+// });
 
-bot.on('message', async (msg) => {
-  const text = msg.message.text;
-  const chatId = msg.message.chat.id;
-  try {
-    if (text.substring(0, 2) == '+7' || text.substring(0, 1) == '8') {
-      const data = new URLSearchParams();
-      data.append('id', chatId);
-      data.append('phone', text);
-      axios({
-        method: 'post',
-        url: 'http://bshop.kz/api/TelChat.php',
-        data: data,
-      })
-        .then(async (res) => {
-          if (res) {
-            const now = moment().tz('Asia/Almaty').format();
+// bot.on('message', async (msg) => {
+//   const text = msg.message.text;
+//   const chatId = msg.message.chat.id;
+//   try {
+//     if (text.substring(0, 2) == '+7' || text.substring(0, 1) == '8') {
+//       const data = new URLSearchParams();
+//       data.append('id', chatId);
+//       data.append('phone', text);
+//       axios({
+//         method: 'post',
+//         url: 'http://bshop.kz/api/TelChat.php',
+//         data: data,
+//       })
+//         .then(async (res) => {
+//           if (res) {
+//             const now = moment().tz('Asia/Almaty').format();
 
-            let year = now.slice(0, 4),
-              month = now.slice(5, 7),
-              day = now.slice(8, 10),
-              nowDay = `${day}.${month}.${year}`;
-            await msg.telegram.sendMessage(
-              chatId,
-              `Отлично, номер ${text} записан, теперь вы будете получать уведомления о Вашем бутике`,
-            );
-            await msg.telegram.sendMessage(
-              chatId,
-              `Далее введите дату рождения в формате ${nowDay}`,
-            );
-          } else {
-            await msg.telegram.sendMessage(chatId, `Такой номер не найден`);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+//             let year = now.slice(0, 4),
+//               month = now.slice(5, 7),
+//               day = now.slice(8, 10),
+//               nowDay = `${day}.${month}.${year}`;
+//             await msg.telegram.sendMessage(
+//               chatId,
+//               `Отлично, номер ${text} записан, теперь вы будете получать уведомления о Вашем бутике`,
+//             );
+//             await msg.telegram.sendMessage(
+//               chatId,
+//               `Далее введите дату рождения в формате ${nowDay}`,
+//             );
+//           } else {
+//             await msg.telegram.sendMessage(chatId, `Такой номер не найден`);
+//           }
+//         })
+//         .catch((error) => {
+//           console.log(error);
+//         });
+//     }
 
-    if (text.length == 10) {
-      const data = new URLSearchParams();
-      data.append('id', chatId);
-      data.append('birthday', text);
-      axios({
-        method: 'post',
-        url: 'http://bshop.kz/api/birthdayTel.php',
-        data: data,
-      }).then(async (res) => {
-        await msg.telegram.sendMessage(
-          chatId,
-          `Первоначальная настройка закончена, удачного пользования!`,
-          buttonsAny,
-        );
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-});
+//     if (text.length == 10) {
+//       const data = new URLSearchParams();
+//       data.append('id', chatId);
+//       data.append('birthday', text);
+//       axios({
+//         method: 'post',
+//         url: 'http://bshop.kz/api/birthdayTel.php',
+//         data: data,
+//       }).then(async (res) => {
+//         await msg.telegram.sendMessage(
+//           chatId,
+//           `Первоначальная настройка закончена, удачного пользования!`,
+//           buttonsAny,
+//         );
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
 
-bot.action('kassa', async (msg) => {
-  const chatId = msg.update.callback_query.message.chat.id;
-  msg.telegram.sendMessage(chatId, `Получение данных...`);
-  try {
-    await msg.answerCbQuery();
-    const chatId = msg.update.callback_query.message.chat.id;
-    await getKassaStaticstick(msg, chatId, buttonsAny);
-  } catch (error) {
-    console.log(error);
-  }
-});
+// bot.action('kassa', async (msg) => {
+//   const chatId = msg.update.callback_query.message.chat.id;
+//   msg.telegram.sendMessage(chatId, `Получение данных...`);
+//   try {
+//     await msg.answerCbQuery();
+//     const chatId = msg.update.callback_query.message.chat.id;
+//     await getKassaStaticstick(msg, chatId, buttonsAny);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
 
-const getKassaStaticstick = async (msg, chatId, buttonsAny) => {
-  const data = new URLSearchParams();
-  data.append('id', chatId);
-  axios({
-    method: 'post',
-    url: 'http://bshop.kz/api/kassaTelegram.php',
-    data: data,
-  }).then((res) => {
-    const now = moment().tz('Asia/Almaty').format();
+// const getKassaStaticstick = async (msg, chatId, buttonsAny) => {
+//   const data = new URLSearchParams();
+//   data.append('id', chatId);
+//   axios({
+//     method: 'post',
+//     url: 'http://bshop.kz/api/kassaTelegram.php',
+//     data: data,
+//   }).then((res) => {
+//     const now = moment().tz('Asia/Almaty').format();
 
-    let year = now.slice(0, 4),
-      month = now.slice(5, 7),
-      day = now.slice(8, 10),
-      time = now.slice(11, 16),
-      nowDay = `${day}.${month}.${year}`;
-    msg.telegram.sendMessage(
-      chatId,
-      `Бутик: ${res.data[0].name}
-Касса:  ${res.data[0].nal + res.data[0].beznal}
-Наличие товара ${res.data[0].CountTotal}
-На: ${nowDay}, ${time}`,
-      buttonsAny,
-    );
-  });
-};
+//     let year = now.slice(0, 4),
+//       month = now.slice(5, 7),
+//       day = now.slice(8, 10),
+//       time = now.slice(11, 16),
+//       nowDay = `${day}.${month}.${year}`;
+//     msg.telegram.sendMessage(
+//       chatId,
+//       `Бутик: ${res.data[0].name}
+// Касса:  ${res.data[0].nal + res.data[0].beznal}
+// Наличие товара ${res.data[0].CountTotal}
+// На: ${nowDay}, ${time}`,
+//       buttonsAny,
+//     );
+//   });
+// };
 
 bot.launch();
 
